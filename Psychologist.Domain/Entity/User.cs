@@ -1,4 +1,6 @@
-﻿namespace Psychologist.Domain.Entity
+﻿using Psychologist.Domain.Enums;
+
+namespace Psychologist.Domain.Entity
 {
     public sealed class User
     {
@@ -9,8 +11,7 @@
         public string LastName { get; set; }
         public string Phone { get; set; }
         public DateTimeOffset BirthDate { get; set; }
-        // 0 female, 1 male
-        public bool Gender { get; set; }
+        public Gender Gender { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
