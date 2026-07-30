@@ -10,7 +10,7 @@ namespace Psychologist.Domain.Entity
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Phone { get; set; }
-        public DateTimeOffset BirthDate { get; set; }
+        public DateOnly BirthDate { get; set; }
         public Gender Gender { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
