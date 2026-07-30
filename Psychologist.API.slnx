@@ -1,3 +1,6 @@
 <Solution>
+  <Folder Name="/Core/">
+    <Project Path="../Psychologist.Domain/Psychologist.Domain.csproj" Id="49f94bd9-ab45-4b48-ad5e-751bfb76daa3" />
+  </Folder>
   <Project Path="Psychologist.API.csproj" />
 </Solution>
