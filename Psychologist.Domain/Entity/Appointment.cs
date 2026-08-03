@@ -2,6 +2,7 @@
 
 namespace Psychologist.Domain.Entity
 {
+    //TODO: considering AvailabilitySlot in future
     public sealed class Appointment
     {
         public Guid Id { get; set; }
