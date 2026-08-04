@@ -1,4 +1,4 @@
-﻿namespace Psychologist.Domain.Enums
+﻿namespace PsychologistSystem.Domain.Enums
 {
     public enum AppointmentStatus
     {

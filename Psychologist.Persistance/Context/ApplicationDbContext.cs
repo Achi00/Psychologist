@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Psychologist.Domain.Entity;
-using Psychologist.Persistance.Identity;
+using PsychologistSystem.Domain.Entity;
+using PsychologistSystem.Persistance.Identity;
 
-namespace Psychologist.Persistance.Context
+namespace PsychologistSystem.Persistance.Context
 {
     public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
-        public DbSet<Domain.Entity.Psychologist> Psychologists => Set<Domain.Entity.Psychologist>();
+        public DbSet<Psychologist> Psychologists => Set<Psychologist>();
 
         public DbSet<Category> Categories => Set<Category>();
 

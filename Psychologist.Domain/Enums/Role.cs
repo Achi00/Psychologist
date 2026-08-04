@@ -1,6 +1,6 @@
-﻿namespace Psychologist.Domain.Enums
+﻿namespace PsychologistSystem.Domain.Enums
 {
-    public enum Roles
+    public enum Role
     {
         User,
         Psychologist,

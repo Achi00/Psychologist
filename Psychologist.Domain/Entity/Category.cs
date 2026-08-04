@@ -1,4 +1,4 @@
-﻿namespace Psychologist.Domain.Entity
+﻿namespace PsychologistSystem.Domain.Entity
 {
     // categories added by admin
     public sealed class Category

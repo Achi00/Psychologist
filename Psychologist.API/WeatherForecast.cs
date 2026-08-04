@@ -1,4 +1,4 @@
-namespace Psychologist.API
+namespace PsychologistSystem.API
 {
     public class WeatherForecast
     {

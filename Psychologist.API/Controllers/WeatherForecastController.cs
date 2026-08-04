@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Psychologist.API.Controllers
+namespace PsychologistSystem.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

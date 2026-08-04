@@ -1,4 +1,4 @@
-﻿namespace Psychologist.Domain.Entity
+﻿namespace PsychologistSystem.Domain.Entity
 {
     public sealed class Psychologist
     {

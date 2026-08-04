@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Psychologist.Domain.Enums;
+using PsychologistSystem.Domain.Enums;
 
-namespace Psychologist.Persistance.Identity
+namespace PsychologistSystem.Persistance.Identity
 {
     public sealed class ApplicationUser : IdentityUser<Guid>
     {

@@ -1,4 +1,4 @@
-﻿namespace Psychologist.Domain.Entity
+﻿namespace PsychologistSystem.Domain.Entity
 {
     // defines calendar data and aveilable work times for booking
     public sealed class WorkingSchedule

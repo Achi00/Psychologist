@@ -1,6 +1,6 @@
-﻿using Psychologist.Domain.Enums;
+﻿using PsychologistSystem.Domain.Enums;
 
-namespace Psychologist.Domain.Entity
+namespace PsychologistSystem.Domain.Entity
 {
     //TODO: considering AvailabilitySlot in future
     public sealed class Appointment
