@@ -8,7 +8,7 @@ namespace PsychologistSystem.Persistance.Configurations
     {
         public void Configure(EntityTypeBuilder<Psychologist> builder)
         {
-            builder.ToTable("Psychologist");
+            builder.ToTable(nameof(Psychologist));
 
             builder.HasKey(x => x.UserId);
 
