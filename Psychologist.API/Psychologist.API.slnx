@@ -2,5 +2,9 @@
   <Folder Name="/Core/">
     <Project Path="../Psychologist.Domain/Psychologist.Domain.csproj" Id="49f94bd9-ab45-4b48-ad5e-751bfb76daa3" />
   </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="../Psychologist.Infrastructure/Psychologist.Infrastructure.csproj" Id="8891f355-73b7-4b73-ab8a-b94a7ea972ce" />
+    <Project Path="../Psychologist.Persistance/Psychologist.Persistance.csproj" Id="fa4f74e1-e0ae-4308-b7d4-68b88c7fc767" />
+  </Folder>
   <Project Path="Psychologist.API.csproj" />
 </Solution>
