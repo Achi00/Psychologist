@@ -12,6 +12,7 @@ namespace PsychologistSystem.Persistance.Configurations
 
             builder.HasKey(x => x.Id);
 
+            // save some space with (0)
             builder.Property(x => x.StartTime)
                 .HasColumnType("datetimeoffset(0)");
             
