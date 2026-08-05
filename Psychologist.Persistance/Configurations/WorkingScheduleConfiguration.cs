@@ -23,9 +23,6 @@ namespace PsychologistSystem.Persistance.Configurations
             builder.Property(x => x.EndTime)
                 .HasColumnType("time(0)");
 
-            builder.Property(x => x.IsUnavailable)
-                .IsRequired();
-
             builder.HasIndex(x => new { x.PsychologistId, x.DayOfWeek });
         }
     }
