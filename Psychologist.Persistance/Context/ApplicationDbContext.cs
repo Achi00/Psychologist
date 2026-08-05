@@ -23,6 +23,7 @@ namespace PsychologistSystem.Persistance.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // needed fo identity schema and model creating
             base.OnModelCreating(builder);
 
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
