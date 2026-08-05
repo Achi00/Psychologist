@@ -12,5 +12,6 @@ namespace PsychologistSystem.Domain.Entity
         public DateTimeOffset EndTime { get; set; }
         public AppointmentStatus Status { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
+        public Psychologist Psychologist { get; set; }
     }
 }
