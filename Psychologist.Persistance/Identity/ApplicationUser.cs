@@ -1,0 +1,16 @@
+﻿using Microsoft.AspNetCore.Identity;
+using PsychologistSystem.Domain.Enums;
+
+namespace PsychologistSystem.Persistance.Identity
+{
+    public sealed class ApplicationUser : IdentityUser<Guid>
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateOnly BirthDate { get; set; }
+        public Gender Gender { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
+    }
+}

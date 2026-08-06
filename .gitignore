@@ -1,6 +1,26 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿# Visual Studio
+.vs/
+*.user
+*.suo
 
-/obj
-/.vs
+# Build output
+bin/
+obj/
+
+# Test results
+TestResults/
+*.trx
+
+# NuGet
+packages/
+
+# Rider
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/Psychologist.API/appsettings.json
