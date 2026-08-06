@@ -1,9 +1,4 @@
 ﻿namespace PsychologistSystem.Application.DTOs.Auth
 {
-    public sealed class RegisterUserRequest
-    {
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+    public sealed record RegisterUserRequest(string UserName, string Email, string Password);
 }
