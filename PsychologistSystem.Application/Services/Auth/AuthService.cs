@@ -1,4 +1,6 @@
-﻿using PsychologistSystem.Application.Contracts.Email;
+﻿using Microsoft.Extensions.Options;
+using PsychologistSystem.Application.Contracts;
+using PsychologistSystem.Application.Contracts.Email;
 using PsychologistSystem.Application.DTOs.Auth;
 using PsychologistSystem.Application.Interfaces.JWT;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
@@ -13,12 +15,15 @@ namespace PsychologistSystem.Application.Services.Auth
         private readonly IIdentityService _identityService;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IEmailService _emailService;
+        private readonly ClientOptions _options;
+        //private readonly I
 
-        public AuthService(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService)
+        public AuthService(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService, IOptions<ClientOptions> options)
         {
             _identityService = identityService;
             _jwtTokenGenerator = jwtTokenGenerator;
             _emailService = emailService;
+            _options = options.Value;
         }
         public async Task<EmailConfirmationResult> RegisterAsync(RegisterUserRequest request)
         {
@@ -32,13 +37,14 @@ namespace PsychologistSystem.Application.Services.Auth
 
             var token = await _identityService.GenerateEmailConfirmationTokenAsync(userId);
 
-            var emailMessage = new EmailMessage(
+            var confirmationLink = $"{_options.BaseUrl}/confirm-email?userId={userId}&token={Uri.EscapeDataString(token)}";
+
+            // TODO: seperate email templates IEmailTemplateService or in html files
+            await _emailService.SendEmailAsync(new EmailMessage(
                 To: request.Email,
-                Subject: request.UserName,
-                PlainTextBody: token,
-                HtmlBody: string.Empty
-            );
-            await _emailService.SendEmailAsync(emailMessage);
+                Subject: "Confirm your email",
+                HtmlBody: $"<p>Please confirm your account by clicking <a href=\"{confirmationLink}\">here</a>.</p>"
+            ));
 
             return new EmailConfirmationResult
             {
@@ -46,7 +52,6 @@ namespace PsychologistSystem.Application.Services.Auth
                 Token = token,
                 Email = request.Email
             };
-
         }
 
         public async Task ConfirmEmailAsync(string userId, string token)
