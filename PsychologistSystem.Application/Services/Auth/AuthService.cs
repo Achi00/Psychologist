@@ -1,6 +1,8 @@
-﻿using PsychologistSystem.Application.DTOs.Auth;
+﻿using PsychologistSystem.Application.Contracts.Email;
+using PsychologistSystem.Application.DTOs.Auth;
 using PsychologistSystem.Application.Interfaces.JWT;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
+using PsychologistSystem.Application.Interfaces.Services.Email;
 using PsychologistSystem.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,30 +12,51 @@ namespace PsychologistSystem.Application.Services.Auth
     {
         private readonly IIdentityService _identityService;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
-        //TODO: add email service for notifications
+        private readonly IEmailService _emailService;
 
-        public AuthService(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator)
+        public AuthService(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService)
         {
             _identityService = identityService;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _emailService = emailService;
         }
         public async Task<EmailConfirmationResult> RegisterAsync(RegisterUserRequest request)
         {
-            //var (status, userId, errors) = await _identityService.CreateUserAsync(request.Email, request.UserName, request.Password);
+            var (status, userId, errors) = await _identityService.CreateUserAsync(request.Email, request.UserName, request.Password);
 
-            //if (status == IdentityResultStatus.Failed)
-            //{
-            //    throw new Exception();
-            //}
+            if (status == IdentityResultStatus.Failed)
+            {
+                // TODO: add custome exception
+                throw new Exception();
+            }
 
-            //var token = await _identityService.GenerateEmailConfirmationTokenAsync(userId);
-            throw new NotImplementedException();
-            
+            var token = await _identityService.GenerateEmailConfirmationTokenAsync(userId);
+
+            var emailMessage = new EmailMessage(
+                To: request.Email,
+                Subject: request.UserName,
+                PlainTextBody: token,
+                HtmlBody: string.Empty
+            );
+            await _emailService.SendEmailAsync(emailMessage);
+
+            return new EmailConfirmationResult
+            {
+                UserId = userId,
+                Token = token,
+                Email = request.Email
+            };
+
         }
 
-        public Task ConfirmEmailAsync(string userId, string token)
+        public async Task ConfirmEmailAsync(string userId, string token)
         {
-            throw new NotImplementedException();
+            var confirmed = await _identityService.ConfirmEmailAsync(Guid.Parse(userId), token);
+
+            if (!confirmed)
+            {
+                throw new ValidationException("Invalid or expired confirmation token.");
+            }
         }
     }
 }
