@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using PsychologistSystem.Application.Contracts.Email;
+using System.Net.Mail;
 
 namespace PsychologistSystem.Application.Interfaces.Services.Email
 {
