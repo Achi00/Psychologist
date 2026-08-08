@@ -1,4 +1,4 @@
-﻿namespace PsychologistSystem.Application.DTOs.Auth
+﻿namespace PsychologistSystem.Application.Interfaces.Services.Auth
 {
     // uses IHttpContextAccessor, reads from ClaimsPrincipal on HttpContext, in API layer
     public interface ICurrentUserService
