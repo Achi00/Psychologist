@@ -1,4 +1,4 @@
 ﻿namespace PsychologistSystem.Application.DTOs.Auth
 {
-    public sealed record ResetPasswordRequest(string UserId, string Token, string NewPassword);
+    public sealed record ResetPasswordRequest(Guid UserId, string Token, string NewPassword);
 }

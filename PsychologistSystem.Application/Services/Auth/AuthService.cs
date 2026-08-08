@@ -2,6 +2,7 @@
 using PsychologistSystem.Application.Contracts;
 using PsychologistSystem.Application.Contracts.Email;
 using PsychologistSystem.Application.DTOs.Auth;
+using PsychologistSystem.Application.Exceptions;
 using PsychologistSystem.Application.Interfaces.JWT;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
@@ -59,9 +60,27 @@ namespace PsychologistSystem.Application.Services.Auth
             }
         }
 
-        public Task<AuthResult> LoginAsync(LoginRequest request)
+        public async Task<AuthResult> LoginAsync(LoginRequest request)
         {
-            throw new NotImplementedException();
+            var userId = await _identityService.GetUserIdByEmailAsync(request.Email);
+
+            if (userId == null)
+            {
+                throw new UnauthorizedException("Invalid credentials");
+            }
+
+            var validPassword = await _identityService.CheckPasswordAsync(userId.Value, request.Password);
+
+            if (!validPassword)
+            {
+                throw new UnauthorizedException("Invalid credentials");
+            }
+
+            var roles = await _identityService.GetRolesAsync(userId.Value);
+
+            var token = _jwtTokenGenerator.GenerateToken(userId.Value, request.Email, roles);
+
+            return new AuthResult(token, DateTime.UtcNow.AddMinutes(60));
         }
 
         public Task LogoutAsync(Guid userId)
@@ -69,14 +88,37 @@ namespace PsychologistSystem.Application.Services.Auth
             throw new NotImplementedException();
         }
 
-        public Task ForgotPasswordAsync(string email)
+        public async Task ForgotPasswordAsync(string email)
         {
-            throw new NotImplementedException();
+            var userId = await _identityService.GetUserIdByEmailAsync(email);
+
+            if (userId == null)
+            {
+                return;
+            }
+
+            var token = await _identityService.GeneratePasswordResetTokenAsync(userId.Value);
+            var resetLink = $"{_options.BaseUrl}/reset-password?userId={userId}&token={Uri.EscapeDataString(token)}";
+
+            // TODO: return html file in future instead
+            await _emailService.SendEmailAsync(new EmailMessage(
+                To: email,
+                Subject: "Reset your password",
+                HtmlBody: $"<p>Reset your password <a href=\"{resetLink}\">here</a>. This link expires shortly.</p>"
+            ));
         }
 
-        public Task ResetPasswordAsync(ResetPasswordRequest request)
+        public async Task ResetPasswordAsync(ResetPasswordRequest request)
         {
-            throw new NotImplementedException();
+            var passwordChecked = await _identityService.CheckPasswordAsync(request.UserId, request.NewPassword);
+
+            // password is already used by this user
+            if (passwordChecked)
+            {
+                throw new InvalidOperationException("New password can't be same as current");
+            }
+
+            await _identityService.ResetPasswordAsync(request.UserId, request.Token, request.NewPassword);
         }
 
         public Task<AuthResult> RefreshTokenAsync(string refreshToken)
