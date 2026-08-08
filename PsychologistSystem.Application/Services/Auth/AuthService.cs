@@ -46,12 +46,7 @@ namespace PsychologistSystem.Application.Services.Auth
                 HtmlBody: $"<p>Please confirm your account by clicking <a href=\"{confirmationLink}\">here</a>.</p>"
             ));
 
-            return new EmailConfirmationResult
-            {
-                UserId = userId,
-                Token = token,
-                Email = request.Email
-            };
+            return new EmailConfirmationResult(userId, token, request.Email);
         }
 
         public async Task ConfirmEmailAsync(string userId, string token)
@@ -62,6 +57,31 @@ namespace PsychologistSystem.Application.Services.Auth
             {
                 throw new ValidationException("Invalid or expired confirmation token.");
             }
+        }
+
+        public Task<AuthResult> LoginAsync(LoginRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task LogoutAsync(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ForgotPasswordAsync(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ResetPasswordAsync(ResetPasswordRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthResult> RefreshTokenAsync(string refreshToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
