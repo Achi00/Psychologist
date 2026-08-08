@@ -4,7 +4,7 @@ namespace PsychologistSystem.Application.Interfaces.Services.Auth
 {
     public interface IIdentityService
     {
-        Task<(IdentityResultStatus Status, Guid UserId, IEnumerable<string> Errors)> CreateUserAsync(string email, string userName, string password);
+        Task<(IdentityResultStatus Status, Guid UserId, IEnumerable<string> Errors)> CreateUserAsync(string email, string firstname, string lastname, string password);
         Task<bool> CheckPasswordAsync(Guid userId, string password);
         Task<Guid?> GetUserIdByEmailAsync(string email);
         Task<IList<string>> GetRolesAsync(Guid userId);

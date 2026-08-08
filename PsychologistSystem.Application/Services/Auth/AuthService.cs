@@ -27,7 +27,7 @@ namespace PsychologistSystem.Application.Services.Auth
         }
         public async Task<EmailConfirmationResult> RegisterAsync(RegisterUserRequest request)
         {
-            var (status, userId, errors) = await _identityService.CreateUserAsync(request.Email, request.UserName, request.Password);
+            var (status, userId, errors) = await _identityService.CreateUserAsync(request.Email, request.Firstname, request.Lastname, request.Password);
 
             if (status == IdentityResultStatus.Failed)
             {

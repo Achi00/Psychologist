@@ -49,12 +49,13 @@ namespace PsychologistSystem.Infrastructure.Auth
             return result.Succeeded;
         }
 
-        public async Task<(IdentityResultStatus Status, Guid UserId, IEnumerable<string> Errors)> CreateUserAsync(string email, string userName, string password)
+        public async Task<(IdentityResultStatus Status, Guid UserId, IEnumerable<string> Errors)> CreateUserAsync(string email, string firstname, string lastname, string password)
         {
             var user = new ApplicationUser
             {
                 Email = email,
-                UserName = userName,
+                FirstName = firstname, 
+                LastName = lastname,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             };
