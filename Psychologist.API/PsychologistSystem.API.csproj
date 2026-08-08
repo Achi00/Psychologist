@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Psychologist.Persistance\PsychologistSystem.Persistance.csproj" />
+    <ProjectReference Include="..\PsychologistSystem.Application\PsychologistSystem.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

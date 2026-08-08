@@ -1,7 +1,15 @@
-﻿namespace PsychologistSystem.Application
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace PsychologistSystem.Application
 {
     public static class DependencyInjection
     {
+        public static IServiceCollection AddApplication(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
 
+            return services;
+        }
     }
 }
