@@ -1,6 +1,7 @@
 using Azure.Core;
 using PsychologistSystem.API.Extensions;
 using PsychologistSystem.Application;
+using PsychologistSystem.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddPersistance(builder.Configuration);
 
 // add application layer DI
 builder.Services.AddApplication();
+// add infrastructure layer DI
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // TODO: move configurations in extension class
 builder.Services.Configure<ClientOptions>(
