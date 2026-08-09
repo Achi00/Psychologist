@@ -23,6 +23,8 @@ namespace PsychologistSystem.Infrastructure.Validators
                     }
                 ));
             }
+
+            // password hash comparison
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash!, password);
 
             return Task.FromResult(result == PasswordVerificationResult.Success

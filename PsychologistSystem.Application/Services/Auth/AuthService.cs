@@ -109,19 +109,12 @@ namespace PsychologistSystem.Application.Services.Auth
 
         public async Task ResetPasswordAsync(ResetPasswordRequest request)
         {
-            // validate token
+            var success = await _identityService.ResetPasswordAsync(request.UserId, request.Token, request.NewPassword);
 
-
-            // check password
-            var passwordChecked = await _identityService.CheckPasswordAsync(request.UserId, request.NewPassword);
-
-            // password is already used by this user
-            if (passwordChecked)
+            if (!success)
             {
-                throw new InvalidOperationException("New password can't be same as current");
+                throw new InvalidOperationException("Invalid or expired reset token, or new password does not meet requirements.");
             }
-
-            await _identityService.ResetPasswordAsync(request.UserId, request.Token, request.NewPassword);
         }
 
         public Task<AuthResult> RefreshTokenAsync(string refreshToken)
