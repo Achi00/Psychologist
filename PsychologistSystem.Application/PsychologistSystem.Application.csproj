@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Psychologist.Domain\PsychologistSystem.Domain.csproj" />
+    <ProjectReference Include="..\Psychologist.Persistance\PsychologistSystem.Persistance.csproj" />
   </ItemGroup>
 
 </Project>

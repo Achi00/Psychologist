@@ -32,8 +32,7 @@ namespace PsychologistSystem.Application.Services.Auth
 
             if (status == IdentityResultStatus.Failed)
             {
-                // TODO: add custome exception
-                throw new Exception();
+                throw new UnauthorizedException();
             }
 
             var token = await _identityService.GenerateEmailConfirmationTokenAsync(userId);
@@ -110,6 +109,10 @@ namespace PsychologistSystem.Application.Services.Auth
 
         public async Task ResetPasswordAsync(ResetPasswordRequest request)
         {
+            // validate token
+
+
+            // check password
             var passwordChecked = await _identityService.CheckPasswordAsync(request.UserId, request.NewPassword);
 
             // password is already used by this user
