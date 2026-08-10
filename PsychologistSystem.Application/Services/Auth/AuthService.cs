@@ -9,6 +9,7 @@ using PsychologistSystem.Application.Interfaces.JWT;
 using PsychologistSystem.Application.Interfaces.Repositories;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
+using PsychologistSystem.Domain.Entity;
 using PsychologistSystem.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -114,9 +115,17 @@ namespace PsychologistSystem.Application.Services.Auth
             return new AuthResult(accessToken, DateTime.UtcNow.AddMinutes(60));
         }
 
-        public async Task LogoutAsync(Guid userId)
+        public async Task LogoutAsync(string rawRefreshToken)
         {
+            // hashing client sent token
+            var tokenHash = _refreshTokenService.HashToken(rawRefreshToken);
+            var token = await _refreshTokenRepository.GetByTokenHashAsync(tokenHash);
 
+            if (token is not null && token.RevokedAt is null)
+            {
+                token.RevokedAt = DateTimeOffset.UtcNow;
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
 
         public async Task ForgotPasswordAsync(string email)
@@ -149,9 +158,33 @@ namespace PsychologistSystem.Application.Services.Auth
             }
         }
 
-        public Task<AuthResult> RefreshTokenAsync(string refreshToken)
+        public async Task<AuthResult> RefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var tokenHash = _refreshTokenService.HashToken(refreshToken);
+            var existing = await _refreshTokenRepository.GetByTokenHashAsync(tokenHash);
+
+            if (existing is null || existing.RevokedAt is not null || existing.ExpiresAt < DateTimeOffset.UtcNow)
+                throw new UnauthorizedException("Invalid or expired refresh token");
+
+            existing.RevokedAt = DateTimeOffset.UtcNow; // rotate: kill the old one
+
+            var roles = await _identityService.GetRolesAsync(existing.UserId);
+
+            var newAccessToken = _jwtTokenGenerator.GenerateToken(existing.UserId, "", roles);
+
+            var newRawRefreshToken = _refreshTokenService.GenerateToken();
+            _refreshTokenRepository.Add(new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = existing.UserId,
+                TokenHash = _refreshTokenService.HashToken(newRawRefreshToken),
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
+                CreatedAt = DateTimeOffset.UtcNow
+            });
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new AuthResult(newAccessToken, DateTime.UtcNow.AddMinutes(15), newRawRefreshToken);
         }
     }
 }

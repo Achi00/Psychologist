@@ -8,7 +8,7 @@ namespace PsychologistSystem.Application.Interfaces.Services.Auth
         Task ConfirmEmailAsync(string userId, string token);
         Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken ct = default);
         // revokes/refreshes token
-        Task LogoutAsync(Guid userId);
+        Task LogoutAsync(string rawRefreshToken);
         Task ForgotPasswordAsync(string email);
         Task ResetPasswordAsync(ResetPasswordRequest request);
         Task<AuthResult> RefreshTokenAsync(string refreshToken);
