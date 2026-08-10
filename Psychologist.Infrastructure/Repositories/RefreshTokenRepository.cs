@@ -1,4 +1,5 @@
-﻿using PsychologistSystem.Application.Interfaces.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using PsychologistSystem.Application.Interfaces.Repositories;
 using PsychologistSystem.Domain.Entity;
 using PsychologistSystem.Persistance.Context;
 
@@ -12,24 +13,34 @@ namespace PsychologistSystem.Infrastructure.Repositories
         {
             _context = context;
         }
-        public Task AddAsync(RefreshToken token)
+        public void Add(RefreshToken token)
         {
-            throw new NotImplementedException();
+            _context.RefreshTokens.Add(token);
         }
 
-        public Task<RefreshToken?> GetByTokenHashAsync(string tokenHash)
+        public async Task<RefreshToken?> GetByTokenHashAsync(string tokenHash)
         {
-            throw new NotImplementedException();
+            return await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.TokenHash == tokenHash);
         }
 
-        public Task RevokeAllForUserAsync(Guid userId)
+        public async Task RevokeAllForUserAsync(Guid userId, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var refreshToken = await _context.RefreshTokens.Where(rt => rt.UserId == userId && rt.RevokedAt == null).ToListAsync(ct);
+
+            foreach (var token in refreshToken)
+            {
+                token.RevokedAt = DateTimeOffset.UtcNow;
+            }
         }
 
-        public Task RevokeAsync(Guid tokenId)
+        public async Task RevokeAsync(Guid tokenId)
         {
-            throw new NotImplementedException();
+            var token = await _context.RefreshTokens.FindAsync(tokenId);
+
+            if (token is not null)
+            {
+                token.RevokedAt = DateTimeOffset.UtcNow;
+            }
         }
     }
 }
