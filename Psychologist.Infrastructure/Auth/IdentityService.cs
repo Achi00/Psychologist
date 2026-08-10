@@ -94,6 +94,13 @@ namespace PsychologistSystem.Infrastructure.Auth
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
+        public async Task<string?> GetEmailByIdAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            
+            return user?.Email;
+        }
+
         public async Task<IList<string>> GetRolesAsync(Guid userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());

@@ -23,6 +23,7 @@ namespace PsychologistSystem.Application.Services.Auth
         private readonly ClientOptions _options;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AuthService> _logger;
 
@@ -33,6 +34,7 @@ namespace PsychologistSystem.Application.Services.Auth
             IOptions<ClientOptions> options,
             IRefreshTokenService refreshTokenService,
             IRefreshTokenRepository refreshTokenRepository,
+            ICurrentUserService currentUserService,
             IUnitOfWork unitOfWork,
             ILogger<AuthService> logger)
         {
@@ -42,6 +44,7 @@ namespace PsychologistSystem.Application.Services.Auth
             _options = options.Value;
             _refreshTokenService = refreshTokenService;
             _refreshTokenRepository = refreshTokenRepository;
+            _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -164,15 +167,25 @@ namespace PsychologistSystem.Application.Services.Auth
             var existing = await _refreshTokenRepository.GetByTokenHashAsync(tokenHash);
 
             if (existing is null || existing.RevokedAt is not null || existing.ExpiresAt < DateTimeOffset.UtcNow)
+            {
                 throw new UnauthorizedException("Invalid or expired refresh token");
+            }
 
-            existing.RevokedAt = DateTimeOffset.UtcNow; // rotate: kill the old one
+            existing.RevokedAt = DateTimeOffset.UtcNow;
 
             var roles = await _identityService.GetRolesAsync(existing.UserId);
 
-            var newAccessToken = _jwtTokenGenerator.GenerateToken(existing.UserId, "", roles);
+            var email = await _identityService.GetEmailByIdAsync(existing.UserId);
+
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new UnauthorizedException("User no longer exists");
+            }
+
+            var newAccessToken = _jwtTokenGenerator.GenerateToken(existing.UserId, email, roles);
 
             var newRawRefreshToken = _refreshTokenService.GenerateToken();
+
             _refreshTokenRepository.Add(new RefreshToken
             {
                 Id = Guid.NewGuid(),

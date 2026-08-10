@@ -13,5 +13,6 @@ namespace PsychologistSystem.Application.Interfaces.Services.Auth
         Task<string> GeneratePasswordResetTokenAsync(Guid userId);
         Task<bool> ResetPasswordAsync(Guid userId, string token, string newPassword);
         Task<bool> AddToRoleAsync(Guid userId, string role);
+        Task<string?> GetEmailByIdAsync(Guid userId);
     }
 }
