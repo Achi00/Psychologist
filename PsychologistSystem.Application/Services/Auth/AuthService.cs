@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PsychologistSystem.Application.Contracts;
 using PsychologistSystem.Application.Contracts.Email;
 using PsychologistSystem.Application.DTOs.Auth;
@@ -17,14 +18,15 @@ namespace PsychologistSystem.Application.Services.Auth
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IEmailService _emailService;
         private readonly ClientOptions _options;
-        //private readonly I
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService, IOptions<ClientOptions> options)
+        public AuthService(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService, IOptions<ClientOptions> options, ILogger<AuthService> logger)
         {
             _identityService = identityService;
             _jwtTokenGenerator = jwtTokenGenerator;
             _emailService = emailService;
             _options = options.Value;
+            _logger = logger;
         }
         public async Task<EmailConfirmationResult> RegisterAsync(RegisterUserRequest request)
         {
@@ -82,9 +84,9 @@ namespace PsychologistSystem.Application.Services.Auth
             return new AuthResult(token, DateTime.UtcNow.AddMinutes(60));
         }
 
-        public Task LogoutAsync(Guid userId)
+        public async Task LogoutAsync(Guid userId)
         {
-            throw new NotImplementedException();
+
         }
 
         public async Task ForgotPasswordAsync(string email)
