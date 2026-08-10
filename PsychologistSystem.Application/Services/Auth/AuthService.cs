@@ -4,7 +4,9 @@ using PsychologistSystem.Application.Contracts;
 using PsychologistSystem.Application.Contracts.Email;
 using PsychologistSystem.Application.DTOs.Auth;
 using PsychologistSystem.Application.Exceptions;
+using PsychologistSystem.Application.Interfaces;
 using PsychologistSystem.Application.Interfaces.JWT;
+using PsychologistSystem.Application.Interfaces.Repositories;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
 using PsychologistSystem.Domain.Enums;
@@ -18,14 +20,28 @@ namespace PsychologistSystem.Application.Services.Auth
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IEmailService _emailService;
         private readonly ClientOptions _options;
+        private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IIdentityService identityService, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService, IOptions<ClientOptions> options, ILogger<AuthService> logger)
+        public AuthService(
+            IIdentityService identityService, 
+            IJwtTokenGenerator jwtTokenGenerator, 
+            IEmailService emailService, 
+            IOptions<ClientOptions> options,
+            IRefreshTokenService refreshTokenService,
+            IRefreshTokenRepository refreshTokenRepository,
+            IUnitOfWork unitOfWork,
+            ILogger<AuthService> logger)
         {
             _identityService = identityService;
             _jwtTokenGenerator = jwtTokenGenerator;
             _emailService = emailService;
             _options = options.Value;
+            _refreshTokenService = refreshTokenService;
+            _refreshTokenRepository = refreshTokenRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
         public async Task<EmailConfirmationResult> RegisterAsync(RegisterUserRequest request)
@@ -61,7 +77,7 @@ namespace PsychologistSystem.Application.Services.Auth
             }
         }
 
-        public async Task<AuthResult> LoginAsync(LoginRequest request)
+        public async Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken ct = default)
         {
             var userId = await _identityService.GetUserIdByEmailAsync(request.Email);
 
@@ -78,10 +94,24 @@ namespace PsychologistSystem.Application.Services.Auth
             }
 
             var roles = await _identityService.GetRolesAsync(userId.Value);
+            var accessToken = _jwtTokenGenerator.GenerateToken(userId.Value, request.Email, roles);
 
-            var token = _jwtTokenGenerator.GenerateToken(userId.Value, request.Email, roles);
+            // refresh token generation hashing
+            var rawRefreshToken = _refreshTokenService.GenerateToken();
+            var tokenHash = _refreshTokenService.HashToken(rawRefreshToken);
 
-            return new AuthResult(token, DateTime.UtcNow.AddMinutes(60));
+            _refreshTokenRepository.Add(new Domain.Entity.RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId.Value,
+                TokenHash = tokenHash,
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
+                CreatedAt = DateTimeOffset.UtcNow
+            });
+
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            return new AuthResult(accessToken, DateTime.UtcNow.AddMinutes(60));
         }
 
         public async Task LogoutAsync(Guid userId)
