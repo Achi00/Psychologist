@@ -31,5 +31,42 @@ namespace PsychologistSystem.API.Controllers
 
             return Ok(new { accessToken = result.AccessToken, expiresAt = result.ExpiresAt });
         }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _authService.RefreshTokenAsync(refreshToken);
+
+            Response.Cookies.Append("refreshToken", result.RefreshToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Path = "/api/auth/refresh"
+            });
+
+            return Ok(new { accessToken = result.AccessToken, expiresAt = result.ExpiresAt });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                await _authService.LogoutAsync(refreshToken);
+            }
+
+            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/api/auth/refresh" });
+            return NoContent();
+        }
     }
 }
