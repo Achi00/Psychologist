@@ -24,8 +24,4 @@
     <ProjectReference Include="..\PsychologistSystem.Application\PsychologistSystem.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
