@@ -57,7 +57,7 @@ namespace PsychologistSystem.Application.Services.Psychologists
                 Description = application.Description
             });
 
-            await _identityService.AddToRoleAsync(application.Id, nameof(Role.Psychologist));
+            await _identityService.AddToRoleAsync(application.UserId, nameof(Role.Psychologist));
 
             // force fresh login so the new role takes effect immediately, not on next menual refresh
             await _refreshTokenRepository.RevokeAllForUserAsync(application.UserId);
