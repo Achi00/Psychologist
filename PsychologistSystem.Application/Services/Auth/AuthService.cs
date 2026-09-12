@@ -113,7 +113,7 @@ namespace PsychologistSystem.Application.Services.Auth
             }
 
             var roles = await _identityService.GetRolesAsync(userId.Value);
-            var accessToken = _jwtTokenGenerator.GenerateToken(userId.Value, request.Email, roles);
+            var (newAccessToken, expiresAt) = _jwtTokenGenerator.GenerateToken(userId.Value, request.Email, roles);
 
             // refresh token generation hashing
             var rawRefreshToken = _refreshTokenService.GenerateToken();
@@ -124,13 +124,13 @@ namespace PsychologistSystem.Application.Services.Auth
                 Id = Guid.NewGuid(),
                 UserId = userId.Value,
                 TokenHash = tokenHash,
-                ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
+                ExpiresAt = expiresAt,
                 CreatedAt = DateTimeOffset.UtcNow
             });
 
             await _unitOfWork.SaveChangesAsync(ct);
 
-            return new AuthResult(accessToken, DateTime.UtcNow.AddMinutes(60));
+            return new AuthResult(newAccessToken, DateTime.UtcNow.AddMinutes(60));
         }
 
         public async Task LogoutAsync(string rawRefreshToken)
