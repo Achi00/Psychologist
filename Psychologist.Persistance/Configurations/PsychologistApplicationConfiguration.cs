@@ -17,7 +17,7 @@ namespace PsychologistSystem.Persistance.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => new { x.UserId, x.Status })
-                .HasDatabaseName("IX_Users_UserId_Status");
+                .HasDatabaseName("IX_PsychologistApplications_UserId_Status");
         }
     }
 }
