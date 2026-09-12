@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PsychologistSystem.Application.Contracts.Auth;
 using System.Text;
@@ -7,8 +8,14 @@ namespace PsychologistSystem.API.Extensions
 {
     public static class AuthExtensions
     {
-        public static IServiceCollection AddAuth(this IServiceCollection services, IHostApplicationBuilder builder)
+        public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+            var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>()
+                ?? throw new InvalidOperationException("JwtSettings configuration section is missing.");
+
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -16,7 +23,9 @@ namespace PsychologistSystem.API.Extensions
             })
             .AddJwtBearer(options =>
             {
-                var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
+                var serviceProvider = services.BuildServiceProvider();
+                var jwtSettings = serviceProvider.GetRequiredService<IOptions<JwtSettings>>().Value;
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -30,7 +39,7 @@ namespace PsychologistSystem.API.Extensions
                 };
             });
 
-            builder.Services.AddAuthorization();
+            services.AddAuthorization();
 
             return services;
         }

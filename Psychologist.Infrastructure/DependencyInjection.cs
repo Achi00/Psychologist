@@ -28,7 +28,6 @@ namespace PsychologistSystem.Infrastructure
            .AddEntityFrameworkStores < ApplicationDbContext>()
            .AddDefaultTokenProviders();
 
-            services.Configure<JwtSettings>(config.GetSection("Jwt"));
             services.Configure<EmailSettings>(config.GetSection("Email"));
 
             services.AddScoped<IIdentityService, IdentityService>();

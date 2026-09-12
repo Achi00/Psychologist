@@ -46,7 +46,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 //});
 //builder.Services.AddAuthorization();
 
-builder.Services.AddAuth(builder);
+builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 // TODO: move configurations in extension class
