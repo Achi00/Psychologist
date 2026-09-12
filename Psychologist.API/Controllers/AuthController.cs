@@ -15,12 +15,9 @@ namespace PsychologistSystem.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request, CancellationToken ct = default)
+        private void SetRefreshTokenCookie(string token)
         {
-            var result = await _authService.LoginAsync(request, ct);
-
-            Response.Cookies.Append("refreshToken", result.RefreshToken!, new CookieOptions
+            Response.Cookies.Append("refreshToken", token, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
@@ -28,6 +25,28 @@ namespace PsychologistSystem.API.Controllers
                 Expires = DateTimeOffset.UtcNow.AddDays(7),
                 Path = "/api/auth/refresh"
             });
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterUserRequest request)
+        {
+            var result = await _authService.RegisterAsync(request);
+            return Ok(new { userId = result.UserId, email = result.Email });
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
+        {
+            await _authService.ConfirmEmailAsync(userId, token);
+            return NoContent();
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest request, CancellationToken ct = default)
+        {
+            var result = await _authService.LoginAsync(request, ct);
+
+            SetRefreshTokenCookie(result.RefreshToken!);
 
             return Ok(new { accessToken = result.AccessToken, expiresAt = result.ExpiresAt });
         }
@@ -44,14 +63,7 @@ namespace PsychologistSystem.API.Controllers
 
             var result = await _authService.RefreshTokenAsync(refreshToken);
 
-            Response.Cookies.Append("refreshToken", result.RefreshToken!, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
-                Path = "/api/auth/refresh"
-            });
+            SetRefreshTokenCookie(result.RefreshToken!);
 
             return Ok(new { accessToken = result.AccessToken, expiresAt = result.ExpiresAt });
         }
@@ -66,6 +78,20 @@ namespace PsychologistSystem.API.Controllers
             }
 
             Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/api/auth/refresh" });
+            return NoContent();
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        {
+            await _authService.ForgotPasswordAsync(email);
+            return Ok(new { message = "If that email is registered, a reset link has been sent." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            await _authService.ResetPasswordAsync(request);
             return NoContent();
         }
     }
