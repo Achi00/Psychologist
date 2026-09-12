@@ -10,6 +10,7 @@ namespace PsychologistSystem.Application.Interfaces.Services.Auth
         Task<IList<string>> GetRolesAsync(Guid userId);
         Task<string> GenerateEmailConfirmationTokenAsync(Guid userId);
         Task<bool> ConfirmEmailAsync(Guid userId, string token);
+        Task<bool> IsEmailConfirmedAsync(Guid userId);
         Task<string> GeneratePasswordResetTokenAsync(Guid userId);
         Task<bool> ResetPasswordAsync(Guid userId, string token, string newPassword);
         Task<bool> AddToRoleAsync(Guid userId, string role);

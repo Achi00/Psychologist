@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentValidation;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PsychologistSystem.Application.Contracts;
 using PsychologistSystem.Application.Contracts.Email;
@@ -11,7 +12,6 @@ using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
 using PsychologistSystem.Domain.Entity;
 using PsychologistSystem.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace PsychologistSystem.Application.Services.Auth
 {
@@ -25,6 +25,8 @@ namespace PsychologistSystem.Application.Services.Auth
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IValidator<LoginRequest> _loginValidator;
+        private readonly IValidator<RegisterUserRequest> _registerValidator;
         private readonly ILogger<AuthService> _logger;
 
         public AuthService(
@@ -36,6 +38,8 @@ namespace PsychologistSystem.Application.Services.Auth
             IRefreshTokenRepository refreshTokenRepository,
             ICurrentUserService currentUserService,
             IUnitOfWork unitOfWork,
+            IValidator<LoginRequest> loginValidator,
+            IValidator<RegisterUserRequest> registerValidator,
             ILogger<AuthService> logger)
         {
             _identityService = identityService;
@@ -46,6 +50,8 @@ namespace PsychologistSystem.Application.Services.Auth
             _refreshTokenRepository = refreshTokenRepository;
             _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
+            _loginValidator = loginValidator;
+            _registerValidator = registerValidator;
             _logger = logger;
         }
         public async Task<EmailConfirmationResult> RegisterAsync(RegisterUserRequest request)
@@ -83,6 +89,8 @@ namespace PsychologistSystem.Application.Services.Auth
 
         public async Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken ct = default)
         {
+            await _loginValidator.ValidateAndThrowAsync(request, ct);
+
             var userId = await _identityService.GetUserIdByEmailAsync(request.Email);
 
             if (userId == null)
@@ -97,6 +105,13 @@ namespace PsychologistSystem.Application.Services.Auth
                 throw new UnauthorizedException("Invalid credentials");
             }
 
+            // deliberately checked after credentials, avoids leaking confirmation
+            var emailConfirmed = await _identityService.IsEmailConfirmedAsync(userId.Value);
+            if (!emailConfirmed)
+            {
+                throw new UnauthorizedException("Please confirm your email before logging in.");
+            }
+
             var roles = await _identityService.GetRolesAsync(userId.Value);
             var accessToken = _jwtTokenGenerator.GenerateToken(userId.Value, request.Email, roles);
 
@@ -104,7 +119,7 @@ namespace PsychologistSystem.Application.Services.Auth
             var rawRefreshToken = _refreshTokenService.GenerateToken();
             var tokenHash = _refreshTokenService.HashToken(rawRefreshToken);
 
-            _refreshTokenRepository.Add(new Domain.Entity.RefreshToken
+            _refreshTokenRepository.Add(new RefreshToken
             {
                 Id = Guid.NewGuid(),
                 UserId = userId.Value,

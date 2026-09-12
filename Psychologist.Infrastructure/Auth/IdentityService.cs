@@ -119,6 +119,12 @@ namespace PsychologistSystem.Infrastructure.Auth
             return user?.Id;
         }
 
+        public async Task<bool> IsEmailConfirmedAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            return user is not null && await _userManager.IsEmailConfirmedAsync(user);
+        }
+
         public async Task<bool> ResetPasswordAsync(Guid userId, string token, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
