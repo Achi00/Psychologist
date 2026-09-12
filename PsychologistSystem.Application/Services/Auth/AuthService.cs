@@ -174,6 +174,10 @@ namespace PsychologistSystem.Application.Services.Auth
             {
                 throw new InvalidOperationException("Invalid or expired reset token, or new password does not meet requirements.");
             }
+
+            // after password reset, kill every existing sessions
+            await _refreshTokenRepository.RevokeAllForUserAsync(request.UserId);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<AuthResult> RefreshTokenAsync(string refreshToken)
