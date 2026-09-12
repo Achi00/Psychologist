@@ -9,6 +9,7 @@ using PsychologistSystem.Application.Interfaces.Repositories;
 using PsychologistSystem.Application.Interfaces.Repositories.Psychologists;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
+using PsychologistSystem.Application.Services.Auth;
 using PsychologistSystem.Infrastructure.Auth;
 using PsychologistSystem.Infrastructure.Email;
 using PsychologistSystem.Infrastructure.Repositories;
@@ -33,6 +34,8 @@ namespace PsychologistSystem.Infrastructure
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IEmailService, MailKitEmailService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
             services.AddScoped<IPsychologistRepository, PsychologistRepository>();
             services.AddScoped<IPsychologistApplicationRepository, PsychologistApplicationRepository>();

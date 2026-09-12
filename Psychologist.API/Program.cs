@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using PsychologistSystem.API.Extensions;
 using PsychologistSystem.Application;
 using PsychologistSystem.Application.Contracts.Auth;
+using PsychologistSystem.Application.Interfaces.Services.Auth;
+using PsychologistSystem.Application.Services.Auth;
 using PsychologistSystem.Infrastructure;
 using System.Text;
 
@@ -48,6 +50,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+// uses IHttpContextAccessor
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // TODO: move configurations in extension class
 builder.Services.Configure<ClientOptions>(
