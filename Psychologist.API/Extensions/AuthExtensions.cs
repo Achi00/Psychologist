@@ -23,9 +23,6 @@ namespace PsychologistSystem.API.Extensions
             })
             .AddJwtBearer(options =>
             {
-                var serviceProvider = services.BuildServiceProvider();
-                var jwtSettings = serviceProvider.GetRequiredService<IOptions<JwtSettings>>().Value;
-
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
