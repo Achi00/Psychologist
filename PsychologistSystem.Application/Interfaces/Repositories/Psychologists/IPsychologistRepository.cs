@@ -4,10 +4,8 @@ namespace PsychologistSystem.Application.Interfaces.Repositories.Psychologists
 {
     public interface IPsychologistRepository
     {
-        void Add(PsychologistApplication application);
-        Task<PsychologistApplication?> GetByIdAsync(Guid id);
-        Task<PsychologistApplication?> GetPendingByUserIdAsync(Guid userId);
-        // for the admin review queue
-        Task<IReadOnlyList<PsychologistApplication>> GetPendingAsync();
+        void Add(Psychologist psychologist);
+        Task<Psychologist?> GetByIdAsync(Guid id, CancellationToken ct);
+        Task<Psychologist?> GetByUserIdAsync(Guid userId, CancellationToken ct);
     }
 }
