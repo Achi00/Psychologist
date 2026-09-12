@@ -124,7 +124,7 @@ namespace PsychologistSystem.Application.Services.Auth
                 Id = Guid.NewGuid(),
                 UserId = userId.Value,
                 TokenHash = tokenHash,
-                ExpiresAt = expiresAt,
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(7),
                 CreatedAt = DateTimeOffset.UtcNow
             });
 
