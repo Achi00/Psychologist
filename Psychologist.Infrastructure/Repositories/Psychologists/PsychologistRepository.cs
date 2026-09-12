@@ -22,7 +22,7 @@ namespace PsychologistSystem.Infrastructure.Repositories.Psychologists
         // getting by psychologist id
         public async Task<Psychologist?> GetByIdAsync(Guid id, CancellationToken ct)
         {
-            var user = await _context.Psychologists.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, ct);
+            var user = await _context.Psychologists.FirstOrDefaultAsync(x => x.Id == id, ct);
 
             if (user == null)
             {
@@ -34,7 +34,7 @@ namespace PsychologistSystem.Infrastructure.Repositories.Psychologists
         // getting by user id
         public async Task<Psychologist?> GetByUserIdAsync(Guid userId, CancellationToken ct)
         {
-            var user = await _context.Psychologists.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == userId, ct);
+            var user = await _context.Psychologists.FirstOrDefaultAsync(x => x.UserId == userId, ct);
 
             if (user == null)
             {
