@@ -107,7 +107,24 @@ namespace PsychologistSystem.Application.Services.Psychologists
 
         public async Task SubmitApplicationAsync(Guid userId, SubmitPsychologistApplicationRequest request, CancellationToken ct)
         {
-            await _applicationRepository.GetPendingAsync(ct);
+            var existing = await _applicationRepository.GetPendingByUserIdAsync(userId, ct);
+
+            if (existing is not null)
+            {
+                throw new InvalidOperationException("You already have a pending application.");
+            }
+
+            _applicationRepository.Add(new PsychologistApplication
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Description = request.Description,
+                CategoryId = request.CategoryId,
+                Status = PsychologistApplicationStatus.Pending,
+                SubmittedAt = DateTimeOffset.UtcNow
+            });
+
+            await _unitOfWork.SaveChangesAsync(ct);
         }
     }
 }
