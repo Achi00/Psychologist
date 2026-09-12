@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Azure.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PsychologistSystem.Application.Contracts.Auth;
@@ -17,7 +18,7 @@ namespace PsychologistSystem.Infrastructure.Auth
         {
             _settings = settings.Value;
         }
-        public string GenerateToken(Guid userId, string email, IEnumerable<string> roles)
+        public (string AccessToken, DateTime ExpiresAt) GenerateToken(Guid userId, string email, IEnumerable<string> roles)
         {
             var claims = new List<Claim>
             {
@@ -34,15 +35,20 @@ namespace PsychologistSystem.Infrastructure.Auth
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+
+            var expiresAt = DateTime.UtcNow.AddMinutes(60);
+
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,
                 audience: _settings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
+                expires: expiresAt,
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return (accessToken, expiresAt);
         }
     }
 }

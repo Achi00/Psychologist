@@ -201,7 +201,7 @@ namespace PsychologistSystem.Application.Services.Auth
                 throw new UnauthorizedException("User no longer exists");
             }
 
-            var newAccessToken = _jwtTokenGenerator.GenerateToken(existing.UserId, email, roles);
+            var (newAccessToken, expiresAt) = _jwtTokenGenerator.GenerateToken(existing.UserId, email, roles);
 
             var newRawRefreshToken = _refreshTokenService.GenerateToken();
 
@@ -216,7 +216,7 @@ namespace PsychologistSystem.Application.Services.Auth
 
             await _unitOfWork.SaveChangesAsync();
 
-            return new AuthResult(newAccessToken, DateTime.UtcNow.AddMinutes(15), newRawRefreshToken);
+            return new AuthResult(newAccessToken, expiresAt, newRawRefreshToken);
         }
     }
 }

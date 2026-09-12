@@ -2,6 +2,6 @@
 {
     public interface IJwtTokenGenerator
     {
-        string GenerateToken(Guid userId, string email, IEnumerable<string> roles);
+        (string AccessToken, DateTime ExpiresAt) GenerateToken(Guid userId, string email, IEnumerable<string> roles);
     }
 }
