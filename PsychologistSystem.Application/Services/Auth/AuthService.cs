@@ -130,7 +130,7 @@ namespace PsychologistSystem.Application.Services.Auth
 
             await _unitOfWork.SaveChangesAsync(ct);
 
-            return new AuthResult(newAccessToken, DateTime.UtcNow.AddMinutes(60));
+            return new AuthResult(newAccessToken, expiresAt, rawRefreshToken);
         }
 
         public async Task LogoutAsync(string rawRefreshToken)
