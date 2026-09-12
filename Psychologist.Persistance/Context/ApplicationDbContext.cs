@@ -13,6 +13,7 @@ namespace PsychologistSystem.Persistance.Context
         public DbSet<Appointment> Appointments => Set<Appointment>();
         public DbSet<WorkingSchedule> WorkingSchedules => Set<WorkingSchedule>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<PsychologistApplication> PsychologistApplications => Set<PsychologistApplication>();
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
