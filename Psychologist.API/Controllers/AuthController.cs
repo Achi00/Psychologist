@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using PsychologistSystem.Application.DTOs.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 
@@ -9,10 +10,11 @@ namespace PsychologistSystem.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-
-        public AuthController(IAuthService authService)
+        private readonly IValidator<RegisterUserRequest> _validator;
+        public AuthController(IAuthService authService, IValidator<RegisterUserRequest> validator)
         {
             _authService = authService;
+            _validator = validator;
         }
 
         private void SetRefreshTokenCookie(string token)
@@ -30,6 +32,7 @@ namespace PsychologistSystem.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
         {
+            await _validator.ValidateAndThrowAsync(request);
             var result = await _authService.RegisterAsync(request);
             return Ok(new { userId = result.UserId, email = result.Email });
         }
