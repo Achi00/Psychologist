@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PsychologistSystem.Application.Contracts.Auth;
+using PsychologistSystem.Application.Interfaces.Services.Auth;
+using PsychologistSystem.Application.Services.Auth;
 using System.Text;
 
 namespace PsychologistSystem.API.Extensions
@@ -37,6 +39,7 @@ namespace PsychologistSystem.API.Extensions
             });
 
             services.AddAuthorization();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             return services;
         }

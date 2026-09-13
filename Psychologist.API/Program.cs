@@ -49,9 +49,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 //builder.Services.AddAuthorization();
 
 builder.Services.AddAuth(builder.Configuration);
-builder.Services.AddHttpContextAccessor();
-// uses IHttpContextAccessor
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
 
 // TODO: move configurations in extension class
 builder.Services.Configure<ClientOptions>(

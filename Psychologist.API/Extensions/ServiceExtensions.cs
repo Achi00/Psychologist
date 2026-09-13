@@ -10,6 +10,8 @@ namespace PsychologistSystem.API.Extensions
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddHttpContextAccessor();
+            // uses IHttpContextAccessor
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             return services;
         }
