@@ -25,9 +25,13 @@ namespace PsychologistSystem.Application.Services.Auth
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<AuthService> _logger;
+
+        // validators
         private readonly IValidator<LoginRequest> _loginValidator;
         private readonly IValidator<RegisterUserRequest> _registerValidator;
-        private readonly ILogger<AuthService> _logger;
+        private readonly IValidator<ResetPasswordRequest> _resetPasswordValidator;
+        private readonly IValidator<ForgotPasswordRequest> _forgotPasswordValidator;
 
         public AuthService(
             IIdentityService identityService, 
@@ -40,6 +44,8 @@ namespace PsychologistSystem.Application.Services.Auth
             IUnitOfWork unitOfWork,
             IValidator<LoginRequest> loginValidator,
             IValidator<RegisterUserRequest> registerValidator,
+            IValidator<ResetPasswordRequest> resetPasswordValidator,
+            IValidator<ForgotPasswordRequest> forgotPasswordValidator,
             ILogger<AuthService> logger)
         {
             _identityService = identityService;
@@ -52,10 +58,14 @@ namespace PsychologistSystem.Application.Services.Auth
             _unitOfWork = unitOfWork;
             _loginValidator = loginValidator;
             _registerValidator = registerValidator;
+            _resetPasswordValidator = resetPasswordValidator;
+            _forgotPasswordValidator = forgotPasswordValidator;
             _logger = logger;
         }
         public async Task<EmailConfirmationResult> RegisterAsync(RegisterUserRequest request)
         {
+            await _registerValidator.ValidateAndThrowAsync(request);
+
             var (status, userId, errors) = await _identityService.CreateUserAsync(request.Email, request.Firstname, request.Lastname, request.Password);
 
             if (status == IdentityResultStatus.Failed)
@@ -146,9 +156,11 @@ namespace PsychologistSystem.Application.Services.Auth
             }
         }
 
-        public async Task ForgotPasswordAsync(string email)
+        public async Task ForgotPasswordAsync(ForgotPasswordRequest request)
         {
-            var userId = await _identityService.GetUserIdByEmailAsync(email);
+            await _forgotPasswordValidator.ValidateAndThrowAsync(request);
+
+            var userId = await _identityService.GetUserIdByEmailAsync(request.Email);
 
             if (userId == null)
             {
@@ -160,7 +172,7 @@ namespace PsychologistSystem.Application.Services.Auth
 
             // TODO: return html file in future instead
             await _emailService.SendEmailAsync(new EmailMessage(
-                To: email,
+                To: request.Email,
                 Subject: "Reset your password",
                 HtmlBody: $"<p>Reset your password <a href=\"{resetLink}\">here</a>. This link expires shortly.</p>"
             ));
@@ -168,6 +180,8 @@ namespace PsychologistSystem.Application.Services.Auth
 
         public async Task ResetPasswordAsync(ResetPasswordRequest request)
         {
+            await _resetPasswordValidator.ValidateAndThrowAsync(request);
+
             var success = await _identityService.ResetPasswordAsync(request.UserId, request.Token, request.NewPassword);
 
             if (!success)
