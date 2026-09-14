@@ -24,7 +24,14 @@ namespace PsychologistSystem.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => { })
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => 
+            {
+                // because UserName = Email, should allow certain characters to avoid validation issues
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequiredLength = 6;
+                options.SignIn.RequireConfirmedEmail = true;
+            })
            .AddPasswordValidator<PreventCurrentPasswordValidator>()
            .AddEntityFrameworkStores < ApplicationDbContext>()
            .AddDefaultTokenProviders();
