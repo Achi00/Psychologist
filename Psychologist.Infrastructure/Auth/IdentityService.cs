@@ -53,6 +53,8 @@ namespace PsychologistSystem.Infrastructure.Auth
         {
             var user = new ApplicationUser
             {
+                // default passed from Identity Framework
+                UserName = email,
                 Email = email,
                 FirstName = firstname, 
                 LastName = lastname,

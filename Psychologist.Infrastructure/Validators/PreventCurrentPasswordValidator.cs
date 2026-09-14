@@ -24,6 +24,12 @@ namespace PsychologistSystem.Infrastructure.Validators
                 ));
             }
 
+            // no existing password to compare against, if true this is new user
+            if (string.IsNullOrEmpty(user.PasswordHash))
+            {
+                return Task.FromResult(IdentityResult.Success);
+            }
+
             // password hash comparison
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash!, password);
 

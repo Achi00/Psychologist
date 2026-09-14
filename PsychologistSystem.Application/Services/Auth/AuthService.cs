@@ -70,7 +70,7 @@ namespace PsychologistSystem.Application.Services.Auth
 
             if (status == IdentityResultStatus.Failed)
             {
-                throw new UnauthorizedException();
+                throw new ValidationException(string.Join("; ", errors));
             }
 
             var token = await _identityService.GenerateEmailConfirmationTokenAsync(userId);

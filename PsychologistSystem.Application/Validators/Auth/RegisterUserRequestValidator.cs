@@ -21,7 +21,7 @@ namespace PsychologistSystem.Application.Validators.Auth
 
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .MinimumLength(12);
+                .MinimumLength(6);
 
             RuleFor(x => x.PasswordConfirmation)
                 .Equal(x => x.Password)
