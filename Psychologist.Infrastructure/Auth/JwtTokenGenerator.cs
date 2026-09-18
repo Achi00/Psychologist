@@ -36,7 +36,7 @@ namespace PsychologistSystem.Infrastructure.Auth
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
 
-            var expiresAt = DateTime.UtcNow.AddMinutes(60);
+            var expiresAt = DateTime.UtcNow.AddMinutes(_settings.ExpiryMinutes);
 
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,

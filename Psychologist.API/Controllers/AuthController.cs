@@ -93,5 +93,12 @@ namespace PsychologistSystem.API.Controllers
             await _authService.ResetPasswordAsync(request);
             return NoContent();
         }
+
+        [HttpPost("resend-confirmation")]
+        public async Task<IActionResult> ResendConfirmation(ResendConfirmationRequest request)
+        {
+            await _authService.ResendConfirmationEmailAsync(request);
+            return Ok(new { message = "If that email is registered and unconfirmed, a new confirmation link has been sent." });
+        }
     }
 }

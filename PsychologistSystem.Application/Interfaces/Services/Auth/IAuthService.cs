@@ -12,5 +12,7 @@ namespace PsychologistSystem.Application.Interfaces.Services.Auth
         Task ForgotPasswordAsync(ForgotPasswordRequest request);
         Task ResetPasswordAsync(ResetPasswordRequest request);
         Task<AuthResult> RefreshTokenAsync(string refreshToken);
+        // in case if user does not validate email and token expired
+        Task ResendConfirmationEmailAsync(ResendConfirmationRequest request);
     }
 }

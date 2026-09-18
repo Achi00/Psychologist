@@ -32,6 +32,7 @@ namespace PsychologistSystem.Application.Services.Auth
         private readonly IValidator<RegisterUserRequest> _registerValidator;
         private readonly IValidator<ResetPasswordRequest> _resetPasswordValidator;
         private readonly IValidator<ForgotPasswordRequest> _forgotPasswordValidator;
+        private readonly IValidator<ResendConfirmationRequest> _resendConfirmationValidator;
 
         public AuthService(
             IIdentityService identityService, 
@@ -231,6 +232,35 @@ namespace PsychologistSystem.Application.Services.Auth
             await _unitOfWork.SaveChangesAsync();
 
             return new AuthResult(newAccessToken, expiresAt, newRawRefreshToken);
+        }
+
+        public async Task ResendConfirmationEmailAsync(ResendConfirmationRequest request)
+        {
+            await _resendConfirmationValidator.ValidateAndThrowAsync(request);
+
+            var userId = await _identityService.GetUserIdByEmailAsync(request.Email);
+
+            if (userId is null)
+            {
+                // no message return, secure existing users cridentials
+                return;
+            }
+
+            var alreadyConfirmed = await _identityService.IsEmailConfirmedAsync(userId.Value);
+
+            if (alreadyConfirmed)
+            {
+                return;
+            }
+
+            var token = await _identityService.GenerateEmailConfirmationTokenAsync(userId.Value);
+            var confirmationLink = $"{_options.BaseUrl}/confirm-email?userId={userId}&token={Uri.EscapeDataString(token)}";
+            // resend confirmation to users email
+            await _emailService.SendEmailAsync(new EmailMessage(
+                To: request.Email,
+                Subject: "Confirm your email",
+                HtmlBody: $"<p>Please confirm your account by clicking <a href=\"{confirmationLink}\">here</a>.</p>"
+            ));
         }
     }
 }
