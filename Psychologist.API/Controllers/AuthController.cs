@@ -33,10 +33,10 @@ namespace PsychologistSystem.API.Controllers
             return Ok(new { userId = result.UserId, email = result.Email });
         }
 
-        [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)
         {
-            await _authService.ConfirmEmailAsync(userId, token);
+            await _authService.ConfirmEmailAsync(request.UserId, request.Token);
             return NoContent();
         }
 
