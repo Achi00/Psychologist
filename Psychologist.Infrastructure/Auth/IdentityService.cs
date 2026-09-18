@@ -127,16 +127,16 @@ namespace PsychologistSystem.Infrastructure.Auth
             return user is not null && await _userManager.IsEmailConfirmedAsync(user);
         }
 
-        public async Task<bool> ResetPasswordAsync(Guid userId, string token, string newPassword)
+        public async Task<(bool, IEnumerable<string>)> ResetPasswordAsync(Guid userId, string token, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null)
             {
-                return false;
+                return (false, new[] { "Invalid request." });
             }
 
             var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-            return result.Succeeded;
+            return (result.Succeeded, result.Errors.Select(e => e.Description));
         }
     }
 }

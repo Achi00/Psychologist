@@ -169,6 +169,8 @@ namespace PsychologistSystem.Application.Services.Auth
             }
 
             var token = await _identityService.GeneratePasswordResetTokenAsync(userId.Value);
+
+            Console.WriteLine(token);
             var resetLink = $"{_options.BaseUrl}/reset-password?userId={userId}&token={Uri.EscapeDataString(token)}";
 
             // TODO: return html file in future instead
@@ -183,11 +185,11 @@ namespace PsychologistSystem.Application.Services.Auth
         {
             await _resetPasswordValidator.ValidateAndThrowAsync(request);
 
-            var success = await _identityService.ResetPasswordAsync(request.UserId, request.Token, request.NewPassword);
+            var (success, errors) = await _identityService.ResetPasswordAsync(request.UserId, request.Token, request.NewPassword);
 
             if (!success)
             {
-                throw new InvalidOperationException("Invalid or expired reset token, or new password does not meet requirements.");
+                throw new ValidationException(string.Join("; ", errors));
             }
 
             // after password reset, kill every existing sessions

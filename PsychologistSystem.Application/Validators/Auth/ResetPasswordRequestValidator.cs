@@ -9,7 +9,11 @@ namespace PsychologistSystem.Application.Validators.Auth
         {
             RuleFor(x => x.UserId).NotEmpty();
             RuleFor(x => x.Token).NotEmpty();
-            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(12);
+            RuleFor(x => x.NewPassword)
+                .NotEmpty()
+                .MinimumLength(6)
+                .Matches("[A-Z]").WithMessage("Password must contain an uppercase letter.")
+                .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain a special character.");
         }
     }
 }
