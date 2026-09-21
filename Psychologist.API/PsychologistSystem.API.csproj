@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.29" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.29" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.29">
@@ -17,7 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Psychologist.Infrastructure\PsychologistSystem.Infrastructure.csproj" />
     <ProjectReference Include="..\Psychologist.Persistance\PsychologistSystem.Persistance.csproj" />
+    <ProjectReference Include="..\PsychologistSystem.Application\PsychologistSystem.Application.csproj" />
   </ItemGroup>
 
 </Project>
