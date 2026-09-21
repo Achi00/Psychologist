@@ -1,5 +1,7 @@
-﻿using PsychologistSystem.Application.Contracts.Email;
+﻿using FluentValidation;
+using PsychologistSystem.Application.Contracts.Email;
 using PsychologistSystem.Application.DTOs.Auth;
+using PsychologistSystem.Application.DTOs.Psychologist;
 using PsychologistSystem.Application.Exceptions;
 using PsychologistSystem.Application.Interfaces;
 using PsychologistSystem.Application.Interfaces.Repositories;
@@ -7,6 +9,7 @@ using PsychologistSystem.Application.Interfaces.Repositories.Psychologists;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
 using PsychologistSystem.Application.Interfaces.Services.Psychologists;
+using PsychologistSystem.Application.Validators.Psychologist;
 using PsychologistSystem.Domain.Entity;
 using PsychologistSystem.Domain.Enums;
 
@@ -20,6 +23,7 @@ namespace PsychologistSystem.Application.Services.Psychologists
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IValidator<RejectApplicationRequestValidator> _rejectValidator;
 
         public PsychologistApplicationService(
             IPsychologistRepository psychologistRepository, 
@@ -27,7 +31,8 @@ namespace PsychologistSystem.Application.Services.Psychologists
             IIdentityService identityService,
             IUnitOfWork unitOfWork,
             IEmailService emailService,
-            IRefreshTokenRepository refreshTokenRepository
+            IRefreshTokenRepository refreshTokenRepository,
+            IValidator<RejectApplicationRequestValidator> rejectValidator
         )
         {
             _psychologistRepository = psychologistRepository;
@@ -36,6 +41,7 @@ namespace PsychologistSystem.Application.Services.Psychologists
             _unitOfWork = unitOfWork;
             _emailService = emailService;
             _refreshTokenRepository = refreshTokenRepository;
+            _rejectValidator = rejectValidator;
         }
         public async Task ApproveApplicationAsync(Guid applicationId, Guid adminUserId, CancellationToken ct)
         {
@@ -83,8 +89,9 @@ namespace PsychologistSystem.Application.Services.Psychologists
             return await _applicationRepository.GetPendingAsync(ct);
         }
 
-        public async Task RejectApplicationAsync(Guid applicationId, Guid adminUserId, string reason, CancellationToken ct)
+        public async Task RejectApplicationAsync(Guid applicationId, Guid adminUserId, RejectApplicationRequest request, CancellationToken ct)
         {
+            await _rejectValidator.ValidateAndThrowAsync(request, ct);
             var application = await _applicationRepository.GetByIdAsync(applicationId, ct);
 
             if (application is null || application.Status != PsychologistApplicationStatus.Pending)

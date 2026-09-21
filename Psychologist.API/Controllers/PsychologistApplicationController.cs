@@ -56,11 +56,10 @@ namespace PsychologistSystem.API.Controllers
 
         [HttpPost("{applicationId:guid}/reject")]
         [Authorize(Roles = nameof(Role.Admin))]
-        public async Task<IActionResult> Reject(Guid applicationId, RejectApplicationRequest request, CancellationToken ct = default)
+        public async Task<IActionResult> Reject(Guid applicationId, RejectApplicationRequest request, CancellationToken ct)
         {
             var adminUserId = _currentUserService.UserId!.Value;
-            await _applicationService.RejectApplicationAsync(applicationId, adminUserId, request.Reason, ct);
-
+            await _applicationService.RejectApplicationAsync(applicationId, adminUserId, request, ct);
             return NoContent();
         }
     }
