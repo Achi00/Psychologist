@@ -1,5 +1,6 @@
 ﻿using PsychologistSystem.Application.Contracts.Email;
 using PsychologistSystem.Application.DTOs.Auth;
+using PsychologistSystem.Application.Exceptions;
 using PsychologistSystem.Application.Interfaces;
 using PsychologistSystem.Application.Interfaces.Repositories;
 using PsychologistSystem.Application.Interfaces.Repositories.Psychologists;
@@ -42,7 +43,7 @@ namespace PsychologistSystem.Application.Services.Psychologists
 
             if (application is null || application.Status != PsychologistApplicationStatus.Pending)
             {
-                throw new InvalidOperationException("Application not found or already reviewed.");
+                throw new NotFoundException("Application not found or already reviewed.");
             }
 
             application.Status = PsychologistApplicationStatus.Approved;

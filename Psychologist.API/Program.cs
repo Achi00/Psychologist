@@ -2,6 +2,7 @@ using Azure.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PsychologistSystem.API.Extensions;
+using PsychologistSystem.API.Middleware;
 using PsychologistSystem.Application;
 using PsychologistSystem.Application.Contracts.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
@@ -17,6 +18,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// custom ex middleware
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+// for framework's own fallback shape
+builder.Services.AddProblemDetails();
 
 // add persistance and db context services
 builder.Services.AddPersistance(builder.Configuration);
@@ -24,31 +29,9 @@ builder.Services.AddPersistance(builder.Configuration);
 builder.Services.AddApplication();
 // add infrastructure layer DI
 builder.Services.AddInfrastructure(builder.Configuration);
-
 // auth
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//    var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuer = true,
-//        ValidateAudience = true,
-//        ValidateLifetime = true,
-//        ValidateIssuerSigningKey = true,
-//        ValidIssuer = jwtSettings.Issuer,
-//        ValidAudience = jwtSettings.Audience,
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-//        ClockSkew = TimeSpan.Zero
-//    };
-//});
-//builder.Services.AddAuthorization();
-
 builder.Services.AddAuth(builder.Configuration);
+
 
 
 // TODO: move configurations in extension class
@@ -59,15 +42,19 @@ builder.Services.Configure<ClientOptions>(
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
 
 app.MapControllers();
 

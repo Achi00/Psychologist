@@ -46,7 +46,7 @@ namespace PsychologistSystem.API.Middleware
             return true;
         }
 
-        // handle expections
+        // handle expections based on type to status code
         private static (int StatusCode, string Title) MapException(Exception exception) => exception switch
         {
             FluentValidation.ValidationException => (StatusCodes.Status400BadRequest, "Validation failed"),
