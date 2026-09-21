@@ -8,6 +8,6 @@ namespace PsychologistSystem.Application.Interfaces.Services.Psychologists
         Task SubmitApplicationAsync(Guid userId, SubmitApplicationRequest request, CancellationToken ct);
         Task ApproveApplicationAsync(Guid applicationId, Guid adminUserId, CancellationToken ct);
         Task RejectApplicationAsync(Guid applicationId, Guid adminUserId, string reason, CancellationToken ct);
-        Task<List<PsychologistApplication>> GetPendingApplicationsAsync(CancellationToken ct);
+        Task<IReadOnlyList<PsychologistApplication>> GetPendingApplicationsAsync(CancellationToken ct);
     }
 }

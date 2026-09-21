@@ -78,6 +78,11 @@ namespace PsychologistSystem.Application.Services.Psychologists
             }
         }
 
+        public async Task<IReadOnlyList<PsychologistApplication>> GetPendingApplicationsAsync(CancellationToken ct)
+        {
+            return await _applicationRepository.GetPendingAsync(ct);
+        }
+
         public async Task RejectApplicationAsync(Guid applicationId, Guid adminUserId, string reason, CancellationToken ct)
         {
             var application = await _applicationRepository.GetByIdAsync(applicationId, ct);

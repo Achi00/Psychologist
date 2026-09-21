@@ -36,6 +36,7 @@ namespace PsychologistSystem.Infrastructure.Repositories.Psychologists
             return _context.PsychologistApplications
                 .Where(a => a.Status == PsychologistApplicationStatus.Pending)
                 .OrderBy(a => a.SubmittedAt)
+                .AsNoTracking()
                 .ToListAsync(ct)
                 .ContinueWith(t => (IReadOnlyList<PsychologistApplication>)t.Result);
         }
