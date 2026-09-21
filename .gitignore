@@ -24,3 +24,4 @@ Thumbs.db
 # Logs
 *.log
 /Psychologist.API/appsettings.json
+/Psychologist.API/appsettings.Development.json
