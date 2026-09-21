@@ -8,6 +8,7 @@ using PsychologistSystem.Application.Contracts.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Services.Auth;
 using PsychologistSystem.Infrastructure;
+using PsychologistSystem.Persistance.Seeding;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,5 +58,8 @@ app.UseAuthorization();
 
 
 app.MapControllers();
+
+// seed admin user
+await AdminSeeder.SeedAdminAsync(app.Services, app.Configuration);
 
 app.Run();

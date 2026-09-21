@@ -1,6 +1,6 @@
 ﻿namespace PsychologistSystem.Application.DTOs.Auth
 {
-    public sealed record SubmitPsychologistApplicationRequest(
+    public sealed record SubmitApplicationRequest(
         string Description,
         Guid CategoryId
     );
