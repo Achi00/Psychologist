@@ -52,6 +52,13 @@ namespace PsychologistSystem.Application.Services.Psychologists
                 throw new NotFoundException("Application not found or already reviewed.");
             }
 
+            var existingPsychologist = await _psychologistRepository.GetByUserIdAsync(application.UserId, ct);
+
+            if (existingPsychologist is not null)
+            {
+                throw new InvalidOperationException("This user is already an approved psychologist.");
+            }
+
             application.Status = PsychologistApplicationStatus.Approved;
             application.ReviewedAt = DateTimeOffset.UtcNow;
             application.ReviewedByUserId = adminUserId;
