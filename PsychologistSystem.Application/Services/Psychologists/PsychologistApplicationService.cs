@@ -23,7 +23,7 @@ namespace PsychologistSystem.Application.Services.Psychologists
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly IValidator<RejectApplicationRequestValidator> _rejectValidator;
+        private readonly IValidator<RejectApplicationRequest> _rejectValidator;
 
         public PsychologistApplicationService(
             IPsychologistRepository psychologistRepository, 
@@ -32,7 +32,7 @@ namespace PsychologistSystem.Application.Services.Psychologists
             IUnitOfWork unitOfWork,
             IEmailService emailService,
             IRefreshTokenRepository refreshTokenRepository,
-            IValidator<RejectApplicationRequestValidator> rejectValidator
+            IValidator<RejectApplicationRequest> rejectValidator
         )
         {
             _psychologistRepository = psychologistRepository;
