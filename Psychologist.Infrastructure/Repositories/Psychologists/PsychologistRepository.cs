@@ -26,7 +26,7 @@ namespace PsychologistSystem.Infrastructure.Repositories.Psychologists
 
             if (user == null)
             {
-                throw new UserNotFoundException("User was not found!");
+                throw new NotFoundException("User was not found!");
             }
 
             return user;
@@ -38,7 +38,7 @@ namespace PsychologistSystem.Infrastructure.Repositories.Psychologists
 
             if (user == null)
             {
-                throw new UserNotFoundException("User was not found!");
+                throw new NotFoundException("User was not found!");
             }
 
             return user;
