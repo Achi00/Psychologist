@@ -19,6 +19,9 @@ namespace PsychologistSystem.Persistance.Configurations
             builder.Property(x => x.Description)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.HasIndex(x => x.Name)
+                .IsUnique();
         }
     }
 }
