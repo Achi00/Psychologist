@@ -6,6 +6,7 @@ using PsychologistSystem.Application.Contracts.Email;
 using PsychologistSystem.Application.Interfaces;
 using PsychologistSystem.Application.Interfaces.JWT;
 using PsychologistSystem.Application.Interfaces.Repositories;
+using PsychologistSystem.Application.Interfaces.Repositories.Categories;
 using PsychologistSystem.Application.Interfaces.Repositories.Psychologists;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
@@ -47,6 +48,7 @@ namespace PsychologistSystem.Infrastructure
             services.AddScoped<IPsychologistRepository, PsychologistRepository>();
             services.AddScoped<IPsychologistApplicationRepository, PsychologistApplicationRepository>();
             services.AddScoped<IRefreshTokenRepository,  RefreshTokenRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUnitOfWork,  UnitOfWork>();
 
             return services;
