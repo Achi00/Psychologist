@@ -7,7 +7,7 @@ namespace PsychologistSystem.Application.Validators.Psychologist
     {
         public RejectApplicationRequestValidator()
         {
-            RuleFor(x => x.Reason).NotEmpty().MaximumLength(500);
+            RuleFor(x => x.RejectionReason).NotEmpty().MaximumLength(500);
         }
     }
 }

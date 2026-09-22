@@ -1,4 +1,4 @@
 ﻿namespace PsychologistSystem.Application.DTOs.Psychologist
 {
-    public sealed record RejectApplicationRequest(string Reason);
+    public sealed record RejectApplicationRequest(string RejectionReason);
 }

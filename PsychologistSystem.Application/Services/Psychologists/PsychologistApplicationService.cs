@@ -108,6 +108,7 @@ namespace PsychologistSystem.Application.Services.Psychologists
             application.Status = PsychologistApplicationStatus.Rejected;
             application.ReviewedAt = DateTimeOffset.UtcNow;
             application.ReviewedByUserId = adminUserId;
+            application.RejectionReason = request.RejectionReason;
 
             await _unitOfWork.SaveChangesAsync(ct);
 
