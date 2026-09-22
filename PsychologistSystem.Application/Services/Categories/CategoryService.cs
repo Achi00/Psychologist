@@ -59,6 +59,14 @@ namespace PsychologistSystem.Application.Services.Categories
                 throw new NotFoundException("Category not found");
             }
 
+            // check if category is used or referenced to someone before deleting it
+            var isInUse = await _categoryRepository.IsReferencedAsync(id, ct);
+
+            if (isInUse)
+            {
+                throw new InvalidOperationException("Cannot delete a category that is in use by psychologists or pending applications.");
+            }
+
             _categoryRepository.Remove(category);
 
             await _unitOfWork.SaveChangesAsync(ct);

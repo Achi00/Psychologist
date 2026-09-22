@@ -9,5 +9,6 @@ namespace PsychologistSystem.Application.Interfaces.Repositories.Categories
         Task<Category?> GetByIdAsync(Guid id, CancellationToken ct = default);
         Task<List<Category>> GetAllAsync(CancellationToken ct = default);
         Task<bool> ExistsByNameAsync(string name, CancellationToken ct = default);
+        Task<bool> IsReferencedAsync(Guid id, CancellationToken ct);
     }
 }

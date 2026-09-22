@@ -33,6 +33,11 @@ namespace PsychologistSystem.Infrastructure.Repositories
             return _context.Categories.FirstOrDefaultAsync(c => c.Id == id, ct);
         }
 
+        public async Task<bool> IsReferencedAsync(Guid id, CancellationToken ct)
+        {
+            return await _context.PsychologistApplications.AnyAsync(a => a.CategoryId == id, ct);
+        }
+
         public void Remove(Category category)
         {
             _context.Categories.Remove(category);
