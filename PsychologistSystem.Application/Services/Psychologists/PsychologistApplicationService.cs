@@ -9,7 +9,6 @@ using PsychologistSystem.Application.Interfaces.Repositories.Psychologists;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
 using PsychologistSystem.Application.Interfaces.Services.Psychologists;
-using PsychologistSystem.Application.Validators.Psychologist;
 using PsychologistSystem.Domain.Entity;
 using PsychologistSystem.Domain.Enums;
 
