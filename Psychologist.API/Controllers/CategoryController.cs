@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PsychologistSystem.Application.DTOs.Category;
-using PsychologistSystem.Application.Services.Categories;
+using PsychologistSystem.Application.Interfaces.Services.Categories;
 using PsychologistSystem.Domain.Enums;
 
 namespace PsychologistSystem.API.Controllers
@@ -11,9 +10,9 @@ namespace PsychologistSystem.API.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly CategoryService _categoryService;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(CategoryService categoryService)
+        public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
