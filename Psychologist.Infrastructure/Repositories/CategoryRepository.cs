@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PsychologistSystem.Application.Interfaces.Repositories.Category;
+using PsychologistSystem.Application.Interfaces.Repositories.Categories;
 using PsychologistSystem.Domain.Entity;
 using PsychologistSystem.Persistance.Context;
 
