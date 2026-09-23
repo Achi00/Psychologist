@@ -3,6 +3,8 @@
 namespace PsychologistSystem.Domain.Entity
 {
     //TODO: considering AvailabilitySlot in future
+    // instance of WorkingSchedule template
+    // concrete booking on specific date and time
     public sealed class Appointment
     {
         public Guid Id { get; set; }

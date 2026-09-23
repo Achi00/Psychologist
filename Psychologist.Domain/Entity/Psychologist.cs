@@ -6,10 +6,9 @@
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string Description { get; set; }
-
         // navigation
         public ICollection<WorkingSchedule> WorkingSchedules { get; set; } = new List<WorkingSchedule>();
-
+        public ICollection<PsychologistCategory> Categories { get; set; } = new List<PsychologistCategory>();
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }
