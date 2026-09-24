@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PsychologistSystem.Domain.Entity;
 
 namespace PsychologistSystem.Application.Interfaces.Repositories.Schedule
 {
-    internal interface IWorkingScheduleRepository
+    public interface IWorkingScheduleRepository
     {
+        void Add(WorkingSchedule schedule);
+        void Remove(WorkingSchedule schedule);
+        Task<WorkingSchedule?> GetByIdAsync(Guid id, CancellationToken ct = default);
+        Task<List<WorkingSchedule>> GetByPsychologistIdAsync(Guid psychologistId, CancellationToken ct = default);
+        Task<List<WorkingSchedule>> GetByPsychologistAndDayAsync(Guid psychologistId, DayOfWeek day, CancellationToken ct = default);
     }
 }
