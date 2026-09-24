@@ -54,6 +54,7 @@ namespace PsychologistSystem.API.Middleware
             ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden"),
             NotFoundException => (StatusCodes.Status404NotFound, "Not found"),
             InvalidOperationException => (StatusCodes.Status400BadRequest, "Bad request"),
+            ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
             _ => (StatusCodes.Status500InternalServerError, "Internal server error")
         };
     }
