@@ -29,9 +29,15 @@ namespace PsychologistSystem.Infrastructure.Repositories.Schedule
             return await _context.WorkingSchedules.AsNoTracking().Where(s => s.PsychologistId == psychologistId && s.DayOfWeek == day).ToListAsync(ct);
         }
 
+        // ordering to get readable week rather than random orders
         public async Task<List<WorkingSchedule>> GetByPsychologistIdAsync(Guid psychologistId, CancellationToken ct = default)
         {
-            return await _context.WorkingSchedules.AsNoTracking().Where(s => s.PsychologistId == psychologistId).ToListAsync(ct);
+            return await _context.WorkingSchedules
+                .AsNoTracking()
+                .Where(s => s.PsychologistId == psychologistId)
+                .OrderBy(s => s.DayOfWeek)
+                .ThenBy(s => s.StartTime)
+                .ToListAsync(ct);
         }
 
         public void Remove(WorkingSchedule schedule)
