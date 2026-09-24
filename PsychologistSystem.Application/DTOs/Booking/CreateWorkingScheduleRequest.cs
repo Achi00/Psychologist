@@ -1,4 +1,8 @@
 ﻿namespace PsychologistSystem.Application.DTOs.Booking
 {
-    public record CreateWorkingScheduleRequest(DateTimeOffset StartTime, DateTimeOffset EndTime);
+    public sealed record CreateWorkingScheduleRequest(
+        DayOfWeek DayOfWeek,
+        TimeOnly StartTime,
+        TimeOnly EndTime
+    );
 }
