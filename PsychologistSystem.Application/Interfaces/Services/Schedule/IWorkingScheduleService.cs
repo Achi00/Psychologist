@@ -1,7 +1,7 @@
 ﻿using PsychologistSystem.Application.DTOs.Booking;
 using PsychologistSystem.Domain.Entity;
 
-namespace PsychologistSystem.Application.Interfaces.Services.Schedile
+namespace PsychologistSystem.Application.Interfaces.Services.Schedule
 {
     public interface IWorkingScheduleService
     {
