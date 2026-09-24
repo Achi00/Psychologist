@@ -8,6 +8,7 @@ using PsychologistSystem.Application.Interfaces.JWT;
 using PsychologistSystem.Application.Interfaces.Repositories;
 using PsychologistSystem.Application.Interfaces.Repositories.Categories;
 using PsychologistSystem.Application.Interfaces.Repositories.Psychologists;
+using PsychologistSystem.Application.Interfaces.Repositories.Schedule;
 using PsychologistSystem.Application.Interfaces.Services.Auth;
 using PsychologistSystem.Application.Interfaces.Services.Email;
 using PsychologistSystem.Application.Services.Auth;
@@ -15,6 +16,7 @@ using PsychologistSystem.Infrastructure.Auth;
 using PsychologistSystem.Infrastructure.Email;
 using PsychologistSystem.Infrastructure.Repositories;
 using PsychologistSystem.Infrastructure.Repositories.Psychologists;
+using PsychologistSystem.Infrastructure.Repositories.Schedule;
 using PsychologistSystem.Infrastructure.Validators;
 using PsychologistSystem.Persistance.Context;
 using PsychologistSystem.Persistance.Identity;
@@ -49,6 +51,7 @@ namespace PsychologistSystem.Infrastructure
             services.AddScoped<IPsychologistApplicationRepository, PsychologistApplicationRepository>();
             services.AddScoped<IRefreshTokenRepository,  RefreshTokenRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IWorkingScheduleRepository, WorkingScheduleRepository>();
             services.AddScoped<IUnitOfWork,  UnitOfWork>();
 
             return services;
