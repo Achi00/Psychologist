@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PsychologistSystem.Application.DTOs.Booking;
+using PsychologistSystem.Application.DTOs.Schedule;
 using PsychologistSystem.Application.Exceptions;
 using PsychologistSystem.Application.Interfaces;
 using PsychologistSystem.Application.Interfaces.Repositories.Psychologists;
@@ -36,7 +36,7 @@ namespace PsychologistSystem.Application.Services.Schedule
             await _createValidator.ValidateAndThrowAsync(request, ct);
 
             // throws if not
-            var psychologist = await CheckIfPsychologist(ct);
+            var psychologist = await GetCurrentPsychologistAsync(ct);
 
             var existingBlocks = await _workingScheduleRepository
                 .GetByPsychologistAndDayAsync(psychologist.Id, request.DayOfWeek, ct);
@@ -56,7 +56,7 @@ namespace PsychologistSystem.Application.Services.Schedule
                 DayOfWeek = request.DayOfWeek,
                 StartTime = request.StartTime,
                 EndTime = request.EndTime,
-                PsychologistId = psychologist.UserId
+                PsychologistId = psychologist.Id
             };
             _workingScheduleRepository.Add(scheduleRecord);
 
@@ -68,27 +68,34 @@ namespace PsychologistSystem.Application.Services.Schedule
         public async Task DeleteAsync(Guid id, CancellationToken ct)
         {
             // throws if not
-            var psychologist = await CheckIfPsychologist(ct);
+            var psychologist = await GetCurrentPsychologistAsync(ct);
 
             var schedule = await _workingScheduleRepository.GetByIdAsync(id, ct)
                 ?? throw new NotFoundException("Schedule was not found");
 
-            _workingScheduleRepository.Remove(schedule);
+            // schedule ownership check
+            if (schedule.PsychologistId != psychologist.Id)
+            {
+                throw new ForbiddenException("You can only delete your own schedule");
+            }
 
+            _workingScheduleRepository.Remove(schedule);
+            
             await _unitOfWork.SaveChangesAsync(ct);
         }
 
-        public async Task<List<WorkingSchedule?>> GetMineAsync(CancellationToken ct)
+        public async Task<List<WorkingScheduleResponse>> GetMineAsync(CancellationToken ct)
         {
-            var psychologist = await CheckIfPsychologist(ct);
+            var psychologist = await GetCurrentPsychologistAsync(ct);
 
-            var fullSchedule = await _workingScheduleRepository.GetByPsychologistIdAsync(psychologist.Id, ct)
-                ?? throw new NotFoundException("Schedule was not found for this psychologists");
+            var schedules = await _workingScheduleRepository.GetByPsychologistIdAsync(psychologist.Id, ct);
 
-            return fullSchedule;
+            return schedules
+                    .Select(s => new WorkingScheduleResponse(s.Id, s.DayOfWeek, s.StartTime, s.EndTime))
+                    .ToList();
         }
 
-        private async Task<Psychologist> CheckIfPsychologist(CancellationToken ct = default)
+        private async Task<Psychologist> GetCurrentPsychologistAsync(CancellationToken ct = default)
         {
             var userId = _currentUserService.UserId
                 ?? throw new UnauthorizedException("Not authenticated.");

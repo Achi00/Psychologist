@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PsychologistSystem.Application.DTOs.Booking;
+using PsychologistSystem.Application.DTOs.Schedule;
 
 namespace PsychologistSystem.Application.Validators.Booking
 {

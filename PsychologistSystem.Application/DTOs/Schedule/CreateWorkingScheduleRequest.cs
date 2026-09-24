@@ -1,4 +1,4 @@
-﻿namespace PsychologistSystem.Application.DTOs.Booking
+﻿namespace PsychologistSystem.Application.DTOs.Schedule
 {
     public sealed record CreateWorkingScheduleRequest(
         DayOfWeek DayOfWeek,
