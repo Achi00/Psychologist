@@ -26,7 +26,7 @@ namespace PsychologistSystem.API.Controllers
             return Ok(res);
         }
 
-        [HttpPost("{id}")]
+        [HttpPost]
         public async Task<IActionResult> CreateSchedule(CreateWorkingScheduleRequest req, CancellationToken ct = default)
         {
             var id =  await _workingScheduleService.CreateAsync(req, ct);
