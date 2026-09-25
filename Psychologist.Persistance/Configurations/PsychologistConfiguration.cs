@@ -10,11 +10,13 @@ namespace PsychologistSystem.Persistance.Configurations
         {
             builder.ToTable(nameof(Psychologist));
 
-            builder.HasKey(x => x.UserId);
+            builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Description)
                 .IsRequired()
                 .HasMaxLength(500);
+
+            builder.HasKey(x => x.UserId);
         }
     }
 }

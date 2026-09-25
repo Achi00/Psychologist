@@ -34,7 +34,7 @@ namespace PsychologistSystem.API.Controllers
             return StatusCode(StatusCodes.Status201Created, new { id });
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteSchedule(Guid id, CancellationToken ct = default)
         {
             await _workingScheduleService.DeleteAsync(id, ct);
