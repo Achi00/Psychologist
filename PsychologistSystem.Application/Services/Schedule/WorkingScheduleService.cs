@@ -90,6 +90,7 @@ namespace PsychologistSystem.Application.Services.Schedule
 
             var schedules = await _workingScheduleRepository.GetByPsychologistIdAsync(psychologist.Id, ct);
 
+            // TODO: select used same way as mapping, use mapping package in future!!!
             return schedules
                     .Select(s => new WorkingScheduleResponse(s.Id, s.DayOfWeek, s.StartTime, s.EndTime))
                     .ToList();
