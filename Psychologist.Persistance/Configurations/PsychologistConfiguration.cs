@@ -16,7 +16,7 @@ namespace PsychologistSystem.Persistance.Configurations
                 .IsRequired()
                 .HasMaxLength(500);
 
-            builder.HasKey(x => x.UserId);
+            builder.HasIndex(x => x.UserId);
         }
     }
 }
